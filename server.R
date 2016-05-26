@@ -8,8 +8,6 @@ allmatches <- mutate(allmatches, set3Played = (WinnerSet3 > 0))
 maptable = c("7-6", "Ambiguous", "6-4", "6-3", "6-2", "6-1")
 allmatches$set1Score <- maptable[allmatches$set1MOV]
 
-# allmatches <- mutate(allmatches, outcome = detOutcome(WinnerSet3, A.or.B))
-
 for (i in 1:nrow(allmatches)) {
   if (allmatches[i, "set3Played"] == FALSE) {
     allmatches[i, "outcome"] <- "Won in 2 sets"
@@ -61,8 +59,6 @@ shinyServer(
           perOutcome[3*(i-1)+j,4] <- 100.0 *perOutcome[3*(i-1)+j,3] / subtotal
         }
       }
-#      as.double(100.0*perOutcome[,4])
-#      sprintf("%2.1f %%", perOutcome[,4])
       output$table1 <- renderTable( {perOutcome})
     } )
   }

@@ -3,7 +3,6 @@ shinyUI(
     # Application title
     tags$h2("CATS Tennis - First Set Winner and Match Results"),
     tags$img(height = 179, width = 921, 
-#             src = "http://www.cvilletennis.org/images/alt-tennis-court_2.gif"),
              src = "alt-tennis-court_2.gif"),
     tags$hr(),
     tags$p("In 2015, a statistical inference project was completed that demonstrated that those players who win the first set in a community tennis match by 4 games or more",
