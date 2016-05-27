@@ -1,0 +1,92 @@
+Recreational Tennis
+========================================================
+author: Jeff Heatwole
+date: Saturday, May 28, 2016
+font-family: 'Verdana'
+transition: rotate
+
+Tennis and Statistics
+========================================================
+![alt text](./www/tennis-ball-banner.gif)
+Modern Sports fans are inundated with statistics:
+
+- American Football
+- Baseball
+- Basketball
+- Soccer
+
+But what about tennis?  
+![alt text](./www/tennis-ball-banner.gif)
+
+CATS Tennis Facts
+========================================================
+- <small>Community tennis group in Central Virginia (USA) since 2006 </small>
+- <small>Rresults tracked in a database on a home-grown website</small>
+- <small>We maintain a rich set of match data from 2006 - 2015:</small>
+```{r echo=FALSE}
+library(dplyr)
+library(ggplot2)
+library(xtable)
+allmatches <- read.csv("http://www.cvilletennis.org/catsdb.csv")
+allmatches <- allmatches[ ,1:10]
+allmatches["set1MOV"] <- NA
+allmatches$set1MOV <- abs(allmatches$WinnerSet1 - allmatches$LoserSet1)
+allmatches <- mutate(allmatches, set3Played = (WinnerSet3 > 0))
+allmatches <- mutate(allmatches, Year = floor(TimeID / 10))
+for (i in 1:nrow(allmatches)) {
+  if (allmatches[i, "set3Played"] == FALSE) {
+    allmatches[i, "outcome"] <- "Won in 2 sets"
+  }
+  else if (allmatches[i,"A.or.B"] == "A") {
+    allmatches[i, "outcome"] <- "Won in 3 sets"
+  }
+  else {
+    allmatches[i, "outcome"] <- "Lost in 3 sets"
+  }
+}
+```
+
+```{r echo=FALSE, xtable-text, results='asis'}
+yearTable <- allmatches %>% group_by(Year) %>% summarise(Matches_Played = n())
+colnames(yearTable) = c("Year", "Matches Played")
+print(xtable(yearTable, caption="", auto=TRUE, comment=F), type="html")
+```
+
+What Questions Can Be Asked?
+========================================================
+![alt text](./www/tennis-ball-banner.gif)
+- <small>Our database contains only player names and final scores</small>
+- <small>We love to challenge "conventional wisdom" with questions like: <i>Does a blowout (large margin of victory) win in the first set improve the chances of winning a match?</i></small>
+- <small>This topic was investigated in <a href="http://www.cvilletennis.org/RecreationalTennis.html">this report</a></small>
+- <small>But we can also interpret this information visually with Shiny!!!</small>
+![alt text](./www/tennis-ball-banner.gif)
+
+Example Usage of the Shiny App
+========================================================
+![alt text](./www/tennis-ball-banner.gif)
+- <small>Select the year as input (2012 in this example) and click Submit!</small>
+- <small>View a histogram (such as the one on the right), summary statistics, or browse the raw data.</small>
+
+***
+
+```{r, echo=FALSE}
+
+matchset <- filter(allmatches, Year==2012)
+ggplot(matchset, aes(x=set1MOV, colour=outcome)) +
+          geom_histogram(fill="white", position="dodge", binwidth = 0.5) +
+          ggtitle("Match Results for Year 2012") +
+          xlab("1st Set Margin of Victory (Games)") +
+          ylab("Count") +
+          scale_x_continuous(breaks=seq(1,6,1)) +
+          coord_fixed(ratio = 0.05)
+
+```
+
+What Can Be Learned from the Data?
+========================================================
+![alt text](./www/tennis-ball-banner.gif)
+- <small>Does the ratio of wins (blue + green) to losses (red) vary with 1st set margin?</small>
+- <small>Is this trend consistent across all years?</small>
+- <small>What other questions can be investigated?</small>
+- <small>Check out the Shiny App yourself by clicking <a href="http://jheatwole.shinyapps.io/ShinyTennis/">this link</a></small>
+![alt text](./www/tennis-ball-banner.gif)
